@@ -1,19 +1,20 @@
 import psycopg2
+from kiwipiepy import Kiwi
 
 def get_database_connection():
     return psycopg2.connect(
-    host="yourhost",
-    dbname='yousrdbname',
-    user='youruser',
-    password="yourpassword",
-    port="yourport"
+    host="localhost",
+    dbname='final_project',
+    user='root',
+    password="5432",
+    port=5432
 )
 
 def fetch_news_information():
     conn = get_database_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, media_company, news_genre, news_image_path, news_title, news_url, news_summary
+        SELECT id, create_dt, media_company, news_genre, news_image_path, news_title, news_url, news_summary
         FROM final_project.news_information
     """)
     news_items = cursor.fetchall()
@@ -30,24 +31,6 @@ def get_total_news_count(genre):
     cursor.close()
     connection.close()
     return count
-
-
-
-# def get_news_by_genre(genre, page=1, per_page=20):
-#     offset = (page - 1) * per_page
-#     connection = get_database_connection() # 데이터베이스 연결 설정
-#     cursor = connection.cursor()
-#     query = """
-#         SELECT * FROM final_project.news_information
-#         WHERE news_genre = %s
-#         ORDER BY create_dt DESC
-#         LIMIT %s OFFSET %s
-#     """
-#     cursor.execute(query, (genre, per_page, offset))
-#     news_items = cursor.fetchall()
-#     cursor.close()
-#     connection.close()
-#     return news_items
 
 def get_news_by_genre(genre, page=1, per_page=20, search_query=''):
     offset = (page - 1) * per_page
@@ -78,3 +61,44 @@ def get_news_by_genre(genre, page=1, per_page=20, search_query=''):
     cursor.close()
     connection.close()
     return news_items
+
+kiwi = Kiwi()
+def extract_keywords(text):
+    analysis = kiwi.analyze(text)
+    return [token[0] for token in analysis[0][0] if token[1] in ['NNG', 'NNP', 'NNB', 'NR', 'NP']]
+
+def load_news_titles_by_genre_and_date(genre, start_date, end_date):
+    with get_database_connection() as conn:
+        with conn.cursor() as cur:
+            query = """
+            SELECT news_title 
+            FROM final_project.news_information 
+            WHERE news_genre = %s AND create_dt BETWEEN %s AND %s
+            """
+            cur.execute(query, (genre, start_date, end_date))
+            return [row[0] for row in cur.fetchall()]
+
+def calculate_similarity(title_keywords, other_title_keywords):
+    intersection = len(set(title_keywords) & set(other_title_keywords))
+    union = len(set(title_keywords) | set(other_title_keywords))
+    return intersection / union if union != 0 else 0
+
+def find_top_groups(title_keywords, threshold=0.25, top_n=10):
+    groups = []
+    for title, keywords in title_keywords.items():
+        found_group = False
+        for group in groups:
+            if calculate_similarity(group['keywords'], keywords) >= threshold:
+                group['titles'].append(title)
+                group['keywords'] = list(set(group['keywords']) | set(keywords))
+                found_group = True
+                break
+        if not found_group:
+            groups.append({'titles': [title], 'keywords': keywords})
+    # 상위 N개 그룹 선택
+    groups.sort(key=lambda g: len(g['titles']), reverse=True)
+    top_groups = groups[:top_n]
+    # 각 그룹의 대표 제목 결정
+    for group in top_groups:
+        group['representative_title'] = max(group['titles'], key=lambda t: len(set(title_keywords[t]) & set(group['keywords'])))
+    return top_groups

@@ -28,14 +28,56 @@ text-decoration-line: none;
 color: inherit;
 }
 
+/* 이슈 뉴스 style */
 
+
+.home_container {
+max-width : 1500px;
+margin : 0 auto;
+padding: 10px;
+}
+
+.home_search {
+text-align : right;
+}
+
+.top10_table {
+    display: flex;
+}
+.table_wrapper {
+    margin-right: 20px; /* 테이블 사이의 간격 */
+}
+
+.news-title, .news-title th, .news-title td {
+    width: 350px; /* 너비 고정 */
+    overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+    text-overflow: ellipsis; /* 내용이 넘칠 경우 말줄임표로 표시 */
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+}
+
+.news-count, .news-count th, .news-count td {
+    width: 50px; /* 너비 고정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.table_wrapper table {
+    table-layout: fixed;
+    width: 100%; /* 테이블의 전체 너비를 고정 */
+}
+
+.wordcloud-container{
+    text-align : center;
+    margin-top: 5%;
+    margin-bottom : 5%;
+}
 
 
 /* 뉴스 style */
-
-.rows-container, .table-container table {
-    width: 100%; /* 컨테이너 너비에 맞춤 */
+.table-container table {
+table-layout:fixed;
+width: 100%;
 }
+
 
 .rows-container {
     display: flex;
@@ -49,7 +91,7 @@ color: inherit;
 
 
 .table-container {
-    margin-top : 2%;
+    padding-top : 1%;
 }
 
 
@@ -82,6 +124,41 @@ th {
     transition: all 0.2s linear;
 }
 
-.news-image:hover {
-  transform: scale(5);
+
+/* 뉴스 image modal style */
+.modal {
+    display: none; /* 기본적으로 숨겨짐 */
+    position: fixed;
+    z-index: 1000; /* 높은 z-index로 모든 요소 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* 반투명 검은색 배경 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+}
+
+.modal-content {
+    display: inline-flex; /* 이미지 크기에 맞춰 크기 조정 */
+    border: 1px solid #888; /* 테두리 */
+    max-width: 95%; /* 최대 너비 */
+    max-height: 95%; /* 최대 높이 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 */
+    transition: 0.3s; /* 부드러운 효과 */
+    overflow: hidden; /* 내부 요소가 넘칠 경우 숨김 */
+}
+
+.modal-content img {
+    max-width: 100%; /* 이미지가 modal-content 크기를 초과하지 않도록 함 */
+    max-height: 100%;
+}
+
+
+/* chart 디자인 */
+.chart_box {
+width : 1500px;
+height : 800px;
+margin : 0 auto;
 }

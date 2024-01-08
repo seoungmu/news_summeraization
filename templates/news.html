@@ -23,23 +23,23 @@
 
     <table>
         <tr>
-            <th>뉴스 게시일</th>
-            <th style="width : 80px;">언론사</th>
+            <th style="width : 90px;">뉴스 게시일</th>
+            <th style="width : 85px;">언론사</th>
             <th style="width : 80px;">뉴스 장르</th>
-            <th style="width : 250px;">이미지</th>
-            <th style="width : 200px;">뉴스 제목</th>
-            <th>뉴스 요약</th>
+            <th style="width : 86px;">이미지</th>
+            <th style="width : 250px;">뉴스 제목</th>
+            <th style=>뉴스 요약</th>
             <th style="width : 25px;">URL</th>
         </tr>
         {% for news in news_items %}
         <tr>
-            <td>{{ news[1] }}</td>
+            <td style="text-align: center;">{{ news[1] }}</td>
             <td style="text-align: center;">{{ news[2] }}</td>
             <td style="text-align: center;">{{ news[3] }}</td>
             <td>
-                <img class="news-image" src="{{ news[4] }}" alt="News Image" onclick="window.open(this.src)">
+                <img class="news-image" src="{{ news[4] }}" alt="News Image" onclick="showModal(event, this.src)">
             </td>
-            <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" >{{ news[5] }}</td>
+            <td style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width : 200px;" >{{ news[5] }}</td>
 
             <td>{{ news[8] }}</td>
             <td style="text-align : center; vertical-align : middle;">
@@ -66,5 +66,14 @@
     </div>
 
 </div>
+
+<!-- 모달 창 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <img id="modalImage" src="" alt="Modal Image">
+    </div>
+</div>
+
+
 
 {% endblock %}
