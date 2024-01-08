@@ -3,11 +3,11 @@ from kiwipiepy import Kiwi
 
 def get_database_connection():
     return psycopg2.connect(
-    host="localhost",
-    dbname='final_project',
-    user='root',
-    password="5432",
-    port=5432
+    host="yourhost",
+    dbname='yousrdbname',
+    user='youruser',
+    password="yourpassword",
+    port="yourport"
 )
 
 def fetch_news_information():
